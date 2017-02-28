@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_meizhi"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/meizhi"/>
+
+        <item
+            android:id="@+id/drawer_android"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/android"/>
+
+        <item
+            android:id="@+id/drawer_ios"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/ios"/>
+
+        <item
+            android:id="@+id/drawer_front_end"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/front_end"/>
+
+        <item
+            android:id="@+id/drawer_recommand"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/recommend"/>
+        <item
+            android:id="@+id/drawer_expand_resource"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/expand_resource"/>
+        <item
+            android:id="@+id/drawer_relax_video"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/relax_video"/>
+
+    </group>
+
+</menu>
