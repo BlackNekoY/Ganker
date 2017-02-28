@@ -26,9 +26,7 @@
 项目采用MVP的架构，逻辑处理放入Presenter中，力求不让Presenter import任意一个android包。
 ### License
     /*
-     *       
-     * Copyright (C) 2015 Drakeet <drakeet.me@gmail.com>
-     * Copyright (C) 2015 GuDong <gudong.name@gmail.com>
+     *      
      *
      * Meizhi is free software: you can redistribute it and/or modify
      * it under the terms of the GNU General Public License as published by
