@@ -24,6 +24,14 @@
 
 ###Design Pattern
 项目采用MVP的架构，逻辑处理放入Presenter中，力求不让Presenter import任意一个android包。
+
+###一些很有用的资料
+[给Android开发者的RxJava详解](http://gank.io/post/560e15be2dca930e00da1083)
+
+[RxJava与Retrofit 结合的最佳实践](http://gank.io/post/56e80c2c677659311bed9841)
+
+[Material design使用入门](http://www.open-open.com/lib/view/open1436152483833.html#_label0)
+
 ### License
     /*
      *      
