@@ -1,5 +1,6 @@
 ### Ganker
-提供每日干货(妹纸)的App，目前项目仍在开发中，很多图标都还是Android的小机器人。
+提供每日干货(妹纸)的App，算是工作之余熟悉一下主流的开源库的使用和material design的设计。
+目前目前项目仍在开发中，很多图标都还是Android的小机器人。
 ### 所有数据以及Api均来自[干货集中营](http://gank.io/)。
 
 
@@ -22,7 +23,7 @@
 * [Multitype](https://github.com/drakeet/MultiType)
 
 ###Design Pattern
-项目整体采用MVP的架构，逻辑处理放入Presenter中，力求不让Presenter import任意一个android包。
+项目采用MVP的架构，逻辑处理放入Presenter中，力求不让Presenter import任意一个android包。
 ### License
     /*
      *       
