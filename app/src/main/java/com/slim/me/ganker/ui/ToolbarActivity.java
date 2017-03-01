@@ -30,6 +30,7 @@ public abstract class ToolbarActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initWindow();
         setContentView(getContentViewId());
 
         ButterKnife.bind(this);
@@ -44,7 +45,6 @@ public abstract class ToolbarActivity extends BaseActivity {
             }
         }
     }
-
 
     private void checkToolbar() {
         if(toolbar == null || appbarLayout == null) {
@@ -75,5 +75,7 @@ public abstract class ToolbarActivity extends BaseActivity {
     protected boolean homeButtonIsEnabled() {
         return false;
     }
+
+    protected void initWindow() {}
 
 }
