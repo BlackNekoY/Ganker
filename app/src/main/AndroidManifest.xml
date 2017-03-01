@@ -28,9 +28,6 @@
         <activity android:name=".ui.GankActivity"
             android:theme="@style/AppTheme"/>
 
-        <activity android:name=".ui.GankWebActivity"
-                  android:theme="@style/AppTheme"/>
-
         <activity android:name=".ui.PhotoActivity"
                   android:theme="@style/AppThemeDark"/>
 
