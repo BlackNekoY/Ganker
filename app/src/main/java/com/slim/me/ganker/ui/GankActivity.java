@@ -3,9 +3,7 @@ package com.slim.me.ganker.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -98,6 +95,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
 
         mGankPresenter = new GankPresenter(this);
         mGankPresenter.requestGankDaily(String.valueOf(mYear), String.valueOf(mMonth), String.valueOf(mDay));
+
     }
 
     private void parseLaunchParams() {
