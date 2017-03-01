@@ -26,12 +26,17 @@ import com.bumptech.glide.request.target.Target;
 import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.AllData;
 import com.slim.me.ganker.data.entity.Gank;
+import com.slim.me.ganker.ui.event.JumpToWebEvent;
 import com.slim.me.ganker.ui.presenter.GankPresenter;
 import com.slim.me.ganker.ui.provider.CategoryViewProvider;
 import com.slim.me.ganker.ui.provider.GanhuoViewProvider;
 import com.slim.me.ganker.ui.view.IGankView;
 import com.slim.me.ganker.util.GLog;
 import com.slim.me.ganker.util.UiUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -183,6 +188,14 @@ public class GankActivity extends ToolbarActivity implements IGankView {
         return true;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(JumpToWebEvent event) {
+        String url = event.url;
+        String title = event.title;
+        Intent intent = WebActivity.launchWebActivity(url, title, this);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.meizhi_image)
     public void jumpToPhotoActivity() {
         if(mImageLoadSuccess) {
@@ -247,6 +260,18 @@ public class GankActivity extends ToolbarActivity implements IGankView {
     @Override
     protected int getContentViewId() {
         return R.layout.activity_gank;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     public static Intent getLaunchIntent(@NonNull Date date, String meizhiUrl, Activity launchActivity) {

@@ -8,10 +8,19 @@
 
     <include layout="@layout/toolbar"/>
 
+
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progressDrawable="@drawable/webview_progress"/>
 
 </android.support.design.widget.CoordinatorLayout>
