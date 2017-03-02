@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -64,7 +63,7 @@ public class PhotoActivity extends BaseActivity implements IPhotoView {
         ButterKnife.bind(this);
         parseIntent();
 
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_teal_500), android.graphics.PorterDuff.Mode.MULTIPLY);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_purple_500), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         Glide.with(this)
                 .load(mImageUrl)

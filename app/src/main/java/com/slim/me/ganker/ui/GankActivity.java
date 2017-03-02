@@ -95,7 +95,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
         initToolbar();
         initRecyclerView();
 
-        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_teal_500), android.graphics.PorterDuff.Mode.MULTIPLY);
+        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_purple_500), android.graphics.PorterDuff.Mode.MULTIPLY);
         setupMeizhiImage();
 
         mGankPresenter = new GankPresenter(this);

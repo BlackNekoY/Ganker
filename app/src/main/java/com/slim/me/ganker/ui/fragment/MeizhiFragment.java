@@ -100,7 +100,7 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
     }
 
     private void setupRefreshLayout() {
-        mRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.material_teal_500));
+        mRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.material_purple_500));
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
