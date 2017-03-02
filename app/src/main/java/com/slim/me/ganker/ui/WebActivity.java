@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -51,6 +53,8 @@ public class WebActivity extends ToolbarActivity {
     private String mUrl;
     private String mTitle;
 
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
+
     @Override
     protected int getContentViewId() {
         return R.layout.activity_web;
@@ -89,9 +93,15 @@ public class WebActivity extends ToolbarActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progressBar.setProgress(newProgress);
-                if(newProgress == 100 && isProgressShown()) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                }else if(newProgress > 0 && !isProgressShown()) {
+                if(newProgress == 100) {
+                    // 200s后再隐藏，不要太快
+                    mUiHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    },200);
+                }else {
                     progressBar.setVisibility(View.VISIBLE);
                 }
 
