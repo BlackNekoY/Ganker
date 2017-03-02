@@ -1,5 +1,6 @@
 package com.slim.me.ganker.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -122,9 +123,13 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
                     mMeizhiFragment = new MeizhiFragment();
                 }
                 selectFragment(mMeizhiFragment);
-                mDrawer.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.category:
+                Intent intent = CategoryActivity.launchActivity(this);
+                startActivity(intent);
                 break;
         }
+        mDrawer.closeDrawer(Gravity.LEFT);
         return false;
     }
 }

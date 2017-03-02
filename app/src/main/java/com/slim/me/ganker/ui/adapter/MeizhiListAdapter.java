@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -18,7 +19,9 @@ import com.slim.me.ganker.util.GLog;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +37,7 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Me
     private final Context mContext;
 
     private List<Meizhi> mMeizhis = new ArrayList<>();
+    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy.MM.dd");
 
     public MeizhiListAdapter(Context context,List<Meizhi> meizhis) {
         mContext = context;
@@ -51,6 +55,7 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Me
     @Override
     public void onBindViewHolder(MeizhiItemViewHolder holder, int position) {
         Meizhi meizhi = mMeizhis.get(position);
+        holder.time.setText(mFormat.format(meizhi.publishedAt));
 
         Glide.with(mContext)
                 .load(meizhi.url)
@@ -99,6 +104,10 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Me
 
         @BindView(R.id.meizhi)
         RatioImageView photo;
+
+        @BindView(R.id.time)
+        TextView time;
+
         Meizhi meizhi;
 
         public MeizhiItemViewHolder(View itemView) {

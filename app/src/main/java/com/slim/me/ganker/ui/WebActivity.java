@@ -101,6 +101,7 @@ public class WebActivity extends ToolbarActivity {
                             progressBar.setVisibility(View.INVISIBLE);
                         }
                     },200);
+                    setWebTitle(view.getTitle());
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
                 }

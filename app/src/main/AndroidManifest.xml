@@ -33,6 +33,9 @@
 
         <activity android:name=".ui.WebActivity"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".ui.CategoryActivity"
+                  android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

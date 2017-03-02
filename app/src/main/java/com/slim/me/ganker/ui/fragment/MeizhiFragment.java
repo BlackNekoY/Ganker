@@ -18,6 +18,7 @@ import com.slim.me.ganker.ui.presenter.MeizhiPresenter;
 import com.slim.me.ganker.ui.view.IMeizhiView;
 import com.slim.me.ganker.util.GLog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -33,8 +34,6 @@ import butterknife.ButterKnife;
 public class MeizhiFragment extends BaseFragment implements IMeizhiView {
 
     public static final String TAG = "MeizhiFragment";
-
-    public static final int ID = 0;
 
     private MeizhiPresenter mPresenter;
     private View mContentView;
@@ -53,6 +52,18 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
         super.onCreate(savedInstanceState);
         mPresenter = new MeizhiPresenter(this);
         mPresenter.loadMore();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Nullable
@@ -125,14 +136,10 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
         mPresenter.unSubscribeAllSubscription();
     }
 
-    @Override
-    public int getFragmentId() {
-        return ID;
-    }
 
     @Override
     public String getTitle() {
-        return "妹纸";
+        return getResources().getString(R.string.fuli);
     }
 
     @Override
