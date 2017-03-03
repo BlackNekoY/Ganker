@@ -66,27 +66,17 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView>{
                     @Override
                     public void onCompleted() {
                         GLog.d(TAG, "requestMeizhi : onComplete.");
-                        mUiHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                IMeizhiView view = getView();
-                                view.setRefreshing(false);
-                            }
-                        },500);//延迟500s再刷新界面
+                        IMeizhiView view = getView();
+                        view.setRefreshing(false);
                         mPage = page;
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         GLog.e(TAG, "requestMeizhi : " + e.toString());
-                        mUiHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                IMeizhiView view = getView();
-                                view.setRefreshing(false);
-                                view.showSnack(R.string.network_error, Snackbar.LENGTH_SHORT);
-                            }
-                        }, 500);
+                        IMeizhiView view = getView();
+                        view.setRefreshing(false);
+                        view.showSnack(R.string.network_error, Snackbar.LENGTH_SHORT);
 
                     }
 

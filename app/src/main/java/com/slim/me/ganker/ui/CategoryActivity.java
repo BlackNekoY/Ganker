@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 
 import com.slim.me.ganker.R;
+import com.slim.me.ganker.constant.Constants;
 import com.slim.me.ganker.ui.adapter.CategoryPagerAdapter;
 import com.slim.me.ganker.ui.fragment.BaseFragment;
 import com.slim.me.ganker.ui.fragment.TabFragment;
@@ -67,12 +68,12 @@ public class CategoryActivity extends ToolbarActivity {
 
     private void initFragmentList() {
         Resources resources = getResources();
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.android)));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.ios)));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.front_end)));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.recommend)));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.expand_resource)));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.relax_video)));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.android), Constants.GankType.ANDROID));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.ios), Constants.GankType.IOS));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.front_end), Constants.GankType.FRONT_END));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.recommend), Constants.GankType.RECOMMAND));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.expand_resource), Constants.GankType.EXPAND_RESOURCE));
+        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.relax_video), Constants.GankType.RELAX_VIDEO));
     }
 
     private void initViewPager() {

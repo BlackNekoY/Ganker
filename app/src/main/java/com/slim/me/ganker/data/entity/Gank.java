@@ -2,6 +2,8 @@ package com.slim.me.ganker.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by Slim on 2017/2/24.
  */
@@ -22,9 +24,9 @@ public class Gank {
 
     @SerializedName("_id")
     public String id;
-    public String createdAt;
+    public Date createdAt;
     public String desc;
-    public String publishedAt;
+    public Date publishedAt;
     public String type;
     public String url;
     public boolean used;
