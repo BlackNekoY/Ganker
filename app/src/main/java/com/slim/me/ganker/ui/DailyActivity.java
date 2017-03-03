@@ -27,10 +27,10 @@ import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.AllData;
 import com.slim.me.ganker.data.entity.Gank;
 import com.slim.me.ganker.ui.event.JumpToWebEvent;
-import com.slim.me.ganker.ui.presenter.GankPresenter;
+import com.slim.me.ganker.ui.presenter.DailyPresenter;
 import com.slim.me.ganker.ui.provider.CategoryViewProvider;
 import com.slim.me.ganker.ui.provider.GanhuoViewProvider;
-import com.slim.me.ganker.ui.view.IGankView;
+import com.slim.me.ganker.ui.view.IDailyView;
 import com.slim.me.ganker.util.GLog;
 import com.slim.me.ganker.util.UiUtil;
 
@@ -54,9 +54,9 @@ import me.drakeet.multitype.MultiTypeAdapter;
 /**
  * Created by Slim on 2017/2/22.
  */
-public class GankActivity extends ToolbarActivity implements IGankView {
+public class DailyActivity extends ToolbarActivity implements IDailyView {
 
-    public static final String TAG = "GankActivity";
+    public static final String TAG = "DailyActivity";
     private static final String EXTRA_DATE = "EXTRA_PARAMS";
     private static final String EXTRA_MEIZHI_URL = "EXTRA_URL";
 
@@ -79,7 +79,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
 
     @BindView(R.id.collapsing_layout) CollapsingToolbarLayout mCollapsingLayout;
 
-    private GankPresenter mGankPresenter;
+    private DailyPresenter mDailyPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,8 +98,8 @@ public class GankActivity extends ToolbarActivity implements IGankView {
         mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_purple_500), android.graphics.PorterDuff.Mode.MULTIPLY);
         setupMeizhiImage();
 
-        mGankPresenter = new GankPresenter(this);
-        mGankPresenter.requestGankDaily(String.valueOf(mYear), String.valueOf(mMonth), String.valueOf(mDay));
+        mDailyPresenter = new DailyPresenter(this);
+        mDailyPresenter.requestGankDaily(String.valueOf(mYear), String.valueOf(mMonth), String.valueOf(mDay));
 
     }
 
@@ -182,7 +182,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
 
     private boolean checkLaunchParams() {
         if(mDate == null || TextUtils.isEmpty(mMeizhiUrl)) {
-            GLog.e(TAG, "LaunchParams is illegal, finish GankActivity. Date:" + mDate + ",meizhiUrl:" + mMeizhiUrl);
+            GLog.e(TAG, "LaunchParams is illegal, finish DailyActivity. Date:" + mDate + ",meizhiUrl:" + mMeizhiUrl);
             return false;
         }
         return true;
@@ -240,7 +240,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
 
     @Override
     protected void unsubscribePresenterSubscription() {
-        mGankPresenter.unSubscribeAllSubscription();
+        mDailyPresenter.unSubscribeAllSubscription();
     }
 
     @Override
@@ -275,7 +275,7 @@ public class GankActivity extends ToolbarActivity implements IGankView {
     }
 
     public static Intent getLaunchIntent(@NonNull Date date, String meizhiUrl, Activity launchActivity) {
-        Intent intent = new Intent(launchActivity, GankActivity.class);
+        Intent intent = new Intent(launchActivity, DailyActivity.class);
         intent.putExtra(EXTRA_DATE, date);
         intent.putExtra(EXTRA_MEIZHI_URL, meizhiUrl);
         return intent;

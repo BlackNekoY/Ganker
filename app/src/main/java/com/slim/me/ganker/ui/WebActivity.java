@@ -88,6 +88,7 @@ public class WebActivity extends ToolbarActivity {
         setting.setDomStorageEnabled(true);
         setting.setSupportZoom(true);
         setting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.loadUrl(mUrl);
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
@@ -98,10 +99,11 @@ public class WebActivity extends ToolbarActivity {
                     mUiHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            progressBar.setVisibility(View.INVISIBLE);
+                            if(webView.getProgress() == 100) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
                         }
                     },200);
-                    setWebTitle(view.getTitle());
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
                 }

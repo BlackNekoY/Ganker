@@ -58,7 +58,6 @@ public class GanhuoViewProvider extends ItemViewProvider<Gank, GanhuoViewProvide
 
         @OnTouch(R.id.desc)
         public boolean onTouch(View view, MotionEvent event) {
-            GLog.d("ontouch", "action:" + event.getAction());
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     int color1 = itemView.getContext().getResources().getColor(R.color.link_color_blue);

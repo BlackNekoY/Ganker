@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.entity.Meizhi;
-import com.slim.me.ganker.ui.GankActivity;
+import com.slim.me.ganker.ui.DailyActivity;
 import com.slim.me.ganker.ui.adapter.MeizhiListAdapter;
 import com.slim.me.ganker.ui.presenter.MeizhiPresenter;
 import com.slim.me.ganker.ui.view.IMeizhiView;
@@ -157,7 +157,7 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MeizhiListAdapter.MeizhiClickEvent event) {
         Meizhi meizhi = event.meizhi;
-        Intent intent = GankActivity.getLaunchIntent(meizhi.publishedAt, meizhi.url, getActivity());
+        Intent intent = DailyActivity.getLaunchIntent(meizhi.publishedAt, meizhi.url, getActivity());
         getActivity().startActivity(intent);
     }
 }

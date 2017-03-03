@@ -7,25 +7,30 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.slim.me.ganker.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTouch;
 
 /**
  * Created by Slim on 2017/2/16.
  */
 public abstract class ToolbarActivity extends BaseActivity {
 
-    @LayoutRes
-    protected abstract int getContentViewId();
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.app_bar)
     AppBarLayout appbarLayout;
+
+    private static final int LIMIT_TIME = 200;
+    private long mLastClkTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +58,20 @@ public abstract class ToolbarActivity extends BaseActivity {
     }
 
 
+    @OnClick(R.id.toolbar)
+    public void toolbarClick() {
+        onToolbarClick();
+
+        long currTime = System.currentTimeMillis();
+        if(currTime - mLastClkTime <= LIMIT_TIME) {
+            mLastClkTime = 0;
+            onToolbarDoubleClick();
+        }else {
+            mLastClkTime = currTime;
+        }
+    }
+
+    // methods which subclass can use
     protected Toolbar getToolbar() {
         return toolbar;
     }
@@ -72,9 +91,17 @@ public abstract class ToolbarActivity extends BaseActivity {
         appbarLayout.setAlpha(alpha);
     }
 
+    // methods subclass can override
+    @LayoutRes
+    protected abstract int getContentViewId();
+
     protected boolean homeButtonIsEnabled() {
         return false;
     }
+
+    protected void onToolbarDoubleClick() {}
+
+    protected void onToolbarClick(){}
 
     protected void initWindow() {}
 

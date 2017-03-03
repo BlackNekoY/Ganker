@@ -2,6 +2,7 @@ package com.slim.me.ganker.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +15,8 @@ import com.slim.me.ganker.R;
 import com.slim.me.ganker.constant.Constants;
 import com.slim.me.ganker.ui.adapter.CategoryPagerAdapter;
 import com.slim.me.ganker.ui.fragment.BaseFragment;
-import com.slim.me.ganker.ui.fragment.TabFragment;
+import com.slim.me.ganker.ui.fragment.GankFragment;
+import com.slim.me.ganker.util.GLog;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ import butterknife.ButterKnife;
  */
 public class CategoryActivity extends ToolbarActivity {
 
+    private static final String TAG = "CategoryActivity";
     @BindView(R.id.tablayout)
     TabLayout tabLayout;
 
@@ -56,6 +59,7 @@ public class CategoryActivity extends ToolbarActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GLog.d(TAG, "onCreate");
         ButterKnife.bind(this);
 
         setToolbarTitle(getResources().getString(R.string.category));
@@ -66,14 +70,28 @@ public class CategoryActivity extends ToolbarActivity {
 
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        GLog.d(TAG, "onConfigurationChanged");
+    }
+
+    @Override
+    protected void onToolbarDoubleClick() {
+        BaseFragment fragment = mFragmentArray.get(content.getCurrentItem());
+        if(fragment != null) {
+            ((GankFragment) fragment).onToolbarDoubleClick();
+        }
+    }
+
     private void initFragmentList() {
         Resources resources = getResources();
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.android), Constants.GankType.ANDROID));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.ios), Constants.GankType.IOS));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.front_end), Constants.GankType.FRONT_END));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.recommend), Constants.GankType.RECOMMAND));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.expand_resource), Constants.GankType.EXPAND_RESOURCE));
-        mFragmentArray.add(TabFragment.newInstance(resources.getString(R.string.relax_video), Constants.GankType.RELAX_VIDEO));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.android), Constants.GankType.ANDROID));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.ios), Constants.GankType.IOS));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.front_end), Constants.GankType.FRONT_END));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.recommend), Constants.GankType.RECOMMAND));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.expand_resource), Constants.GankType.EXPAND_RESOURCE));
+        mFragmentArray.add(GankFragment.newInstance(resources.getString(R.string.relax_video), Constants.GankType.RELAX_VIDEO));
     }
 
     private void initViewPager() {

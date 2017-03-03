@@ -1,6 +1,7 @@
 package com.slim.me.ganker.ui.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,11 +31,17 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankIt
 
     private Context mContext;
     private List<Gank> mGanks = new ArrayList<>();
+    private OnGankClickListener mListener;
+
     public GankListAdapter(Context context, List<Gank> ganks) {
         mContext = context;
         if (ganks != null) {
             mGanks.addAll(ganks);
         }
+    }
+
+    public void setOnGankClickListener(OnGankClickListener listener) {
+        mListener = listener;
     }
 
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy年MM月dd日");
@@ -49,7 +56,7 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankIt
 
     @Override
     public GankItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GankItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gank_item, null));
+        return new GankItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gank_item, null), mListener);
     }
 
     @Override
@@ -76,17 +83,24 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankIt
         TextView author;
 
         Gank gank;
+        OnGankClickListener listener;
 
 
-        public GankItemViewHolder(View itemView) {
+        public GankItemViewHolder(View itemView, OnGankClickListener listener) {
             super(itemView);
+            this.listener = listener;
             ButterKnife.bind(this, itemView);
         }
 
         @OnClick(R.id.card)
         public void onCardClick() {
-            JumpToWebEvent event = new JumpToWebEvent(gank.url, gank.desc);
-            EventBus.getDefault().post(event);
+            if(listener != null) {
+                listener.onGankClick(gank);
+            }
         }
+    }
+
+    public interface OnGankClickListener {
+        void onGankClick(Gank gank);
     }
 }

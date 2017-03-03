@@ -1,14 +1,17 @@
 package com.slim.me.ganker.ui.view;
 
-import com.slim.me.ganker.data.AllData;
+import com.slim.me.ganker.data.entity.Gank;
+
+import java.util.List;
 
 /**
- * Created by Slim on 2017/2/25.
+ * Created by Slim on 2017/3/3.
  */
 
 public interface IGankView extends IBaseView {
 
-    void updateDaily(AllData data);
+    void setRefreshing(boolean refreshing);
 
-    void setLoadingState(boolean isLoading);
+    void updateGanks(List<Gank> gankList);
+
 }
