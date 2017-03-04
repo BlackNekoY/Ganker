@@ -40,7 +40,7 @@ public class CategoryViewProvider extends ItemViewProvider<CategoryViewProvider.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.category)
+        @BindView(R.id.drawer_category)
         TextView category;
 
         public ViewHolder(View itemView) {

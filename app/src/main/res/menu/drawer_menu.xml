@@ -2,15 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/drawer_meizhi"
-            android:icon="@mipmap/ic_launcher"
-            android:title="@string/meizhi"/>
 
-        <item
-            android:id="@+id/category"
-            android:icon="@mipmap/ic_launcher"
-            android:title="@string/category"/>
+        <item android:title="@string/gankio">
+            <menu>
+                <item
+                    android:id="@+id/drawer_meizhi"
+                    android:icon="@drawable/ic_girl_white_24dp"
+                    android:title="@string/meizhi"/>
+
+                <item
+                    android:id="@+id/drawer_category"
+                    android:icon="@drawable/ic_extension_white_24dp"
+                    android:title="@string/category"/>
+            </menu>
+        </item>
+
+
+        <item android:title="@string/app_name">
+            <menu>
+                <item
+                    android:id="@+id/drawer_setting"
+                    android:icon="@drawable/ic_settings_white_24dp"
+                    android:title="@string/setting"/>
+
+                <item
+                    android:id="@+id/drawer_about"
+                    android:icon="@drawable/ic_info_white_24dp"
+                    android:title="@string/about"/>
+            </menu>
+        </item>
 
     </group>
 

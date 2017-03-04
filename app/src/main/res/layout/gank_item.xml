@@ -5,8 +5,8 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
     android:clickable="true"
     android:foreground="?android:selectableItemBackground"
     android:orientation="vertical"
@@ -35,7 +35,7 @@
             android:layout_below="@id/desc"
             android:layout_marginTop="20dp"
             android:text="2017-8-8"
-            android:textColor="@color/material_secondary_text"
+            android:textColor="@color/material_gray"
             android:textSize="14sp"/>
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_below="@id/desc"
             android:layout_marginTop="20dp"
             android:text="(author)"
-            android:textColor="@color/material_secondary_text"
+            android:textColor="@color/material_gray"
             android:textSize="14sp"/>
 
     </RelativeLayout>

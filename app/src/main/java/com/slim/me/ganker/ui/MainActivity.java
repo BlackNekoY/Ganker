@@ -1,6 +1,7 @@
 package com.slim.me.ganker.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -23,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends ToolbarActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends ToolbarActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.drawer)
     DrawerLayout mDrawer;
@@ -33,6 +34,8 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
     private ActionBarDrawerToggle mToggle;
 
     private MeizhiFragment mMeizhiFragment;
+
+    private int mCurrentDrawerId;
 
     @Override
     @LayoutRes
@@ -49,16 +52,28 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
         setToolbarTitle(getResources().getString(R.string.app_name));
 
         setupDrawer();
-
-        mNavigationView.setItemIconTintList(null);
-        mNavigationView.setNavigationItemSelectedListener(this);
+        setupNavigation();
 
         mMeizhiFragment = new MeizhiFragment();
         selectFragment(mMeizhiFragment);
+
+    }
+
+    private void setupNavigation() {
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        int[][] states = new int[][]{
+                new int[]{},
+        };
+        int[] colors = new int[]{
+                getResources().getColor(R.color.material_purple_500),
+        };
+
+        mNavigationView.setItemIconTintList(new ColorStateList(states, colors));
     }
 
     private void setupDrawer() {
-        mToggle = new ActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.app_name, R.string.app_name){
+        mToggle = new ActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -81,6 +96,18 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
 
     private void selectFragment(BaseFragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    private void setDrawerItemChecked(int itemId) {
+        MenuItem newItem = mNavigationView.getMenu().findItem(itemId);
+        if(newItem != null) {
+            MenuItem oldItem = mNavigationView.getMenu().findItem(mCurrentDrawerId);
+            if(oldItem != null) {
+                oldItem.setChecked(false);
+            }
+            mCurrentDrawerId = itemId;
+            newItem.setChecked(true);
+        }
     }
 
     @Override
@@ -109,7 +136,7 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.about_me:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -119,12 +146,12 @@ public class MainActivity extends ToolbarActivity implements NavigationView.OnNa
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_meizhi:
-                if(mMeizhiFragment == null) {
+                if (mMeizhiFragment == null) {
                     mMeizhiFragment = new MeizhiFragment();
                 }
                 selectFragment(mMeizhiFragment);
                 break;
-            case R.id.category:
+            case R.id.drawer_category:
                 Intent intent = CategoryActivity.launchActivity(this);
                 startActivity(intent);
                 break;

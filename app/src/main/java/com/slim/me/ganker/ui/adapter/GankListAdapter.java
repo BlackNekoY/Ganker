@@ -56,7 +56,8 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankIt
 
     @Override
     public GankItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GankItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gank_item, null), mListener);
+        // CardVew是根布局，margin要起效需要将其Inflate进ViewGroup中
+        return new GankItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gank_item, parent, false), mListener);
     }
 
     @Override
