@@ -1,4 +1,4 @@
-### Ganker
+## Ganker
 提供每日干货(妹纸)的App，算是工作之余熟悉一下主流的开源库的使用和material design的设计。
 目前目前项目仍在开发中，很多图标都还是Android的小机器人。
 
