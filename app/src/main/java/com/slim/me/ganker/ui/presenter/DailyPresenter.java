@@ -4,8 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.slim.me.ganker.R;
-import com.slim.me.ganker.api.ApiManager;
+import com.slim.me.ganker.manager.ApiManager;
 import com.slim.me.ganker.data.AllData;
+import com.slim.me.ganker.manager.SuperManager;
 import com.slim.me.ganker.ui.view.IDailyView;
 import com.slim.me.ganker.util.GLog;
 
@@ -29,8 +30,8 @@ public class DailyPresenter extends BasePresenter<IDailyView> {
     public void requestGankDaily(@NonNull String year, @NonNull String month, @NonNull String day) {
         GLog.d(TAG, "requestGankDaily, year=" + year + ",month=" + month + ",day=" + day);
         getView().setLoadingState(true);
-        Subscription subscription = ApiManager.getInstance()
-                .getGankApi()
+        ApiManager manager = (ApiManager) SuperManager.getAppManager(SuperManager.API_MANAGER);
+        Subscription subscription = manager.getGankApi()
                 .getDailyData(year, month, day)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

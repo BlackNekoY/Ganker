@@ -4,10 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.slim.me.ganker.R;
-import com.slim.me.ganker.api.ApiManager;
+import com.slim.me.ganker.manager.ApiManager;
 import com.slim.me.ganker.constant.Constants;
 import com.slim.me.ganker.data.GankData;
 import com.slim.me.ganker.data.entity.Gank;
+import com.slim.me.ganker.manager.SuperManager;
 import com.slim.me.ganker.ui.view.IGankView;
 import com.slim.me.ganker.util.GLog;
 
@@ -60,7 +61,8 @@ public class GankPresenter extends BasePresenter<IGankView> {
     private synchronized void requestGank(int number, final int page, final int loadType) {
         GLog.d(TAG,"requestGank, number=" + number + ",page=" + page + ",loadType=" + loadType);
 
-        Subscription subscription = ApiManager.getInstance()
+        ApiManager manager = (ApiManager) SuperManager.getAppManager(SuperManager.API_MANAGER);
+        Subscription subscription = manager
                 .getGankApi()
                 .getGankData(mType, number, page)
                 .subscribeOn(Schedulers.io())

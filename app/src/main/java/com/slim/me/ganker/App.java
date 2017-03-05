@@ -1,8 +1,8 @@
 package com.slim.me.ganker;
 
 import android.app.Application;
+import android.content.Context;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
  * Created by Slim on 2017/2/19.
@@ -10,9 +10,14 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class App extends Application {
 
+    // only use on DataManager's onInit
+    // don't use it in other way!
+    public static Context sContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Fresco.initialize(this);
+        sContext = this;
     }
+
 }

@@ -7,28 +7,34 @@ import android.support.design.widget.Snackbar;
 import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.MeizhiData;
 import com.slim.me.ganker.data.entity.Meizhi;
-import com.slim.me.ganker.api.ApiManager;
+import com.slim.me.ganker.data.entity.MeizhiDao;
+import com.slim.me.ganker.manager.ApiManager;
+import com.slim.me.ganker.manager.DatabaseManager;
+import com.slim.me.ganker.manager.SuperManager;
 import com.slim.me.ganker.ui.view.IMeizhiView;
 import com.slim.me.ganker.util.GLog;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
  * TODO Presenter可以将不同业务抽成不同的Manager，比如
  * Meizhi下载：MeizhiDownloadManager
  * Meizhi写数据库:MeizhiDatabaseManager等，Presenter不操作具体逻辑，分发给具体的model
- *
+ * <p>
  * Created by Slim on 2017/2/16.
  */
-public class MeizhiPresenter extends BasePresenter<IMeizhiView>{
+public class MeizhiPresenter extends BasePresenter<IMeizhiView> {
 
     public static final String TAG = "MeizhiPresenter";
 
@@ -54,15 +60,51 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView>{
         requestMeizhi(REQUEST_NUM, 1, TYPE_REFRESH);
     }
 
+    public void queryMeizhiFromDatabase() {
+        Observable.create(new Observable.OnSubscribe<List<Meizhi>>() {
+            @Override
+            public void call(Subscriber<? super List<Meizhi>> subscriber) {
+                DatabaseManager manager = (DatabaseManager) SuperManager.getAppManager(SuperManager.DATABASE_MANAGER);
+                List<Meizhi> meizhis = manager.getMeizhiDao().queryBuilder().list();
+                subscriber.onNext(meizhis);
+                subscriber.onCompleted();
+            }
+        })
+                .flatMap(new Func1<List<Meizhi>, Observable<Meizhi>>() {
+                    @Override
+                    public Observable<Meizhi> call(List<Meizhi> meizhis) {
+                        return Observable.from(meizhis);
+                    }
+                })
+                .toSortedList((meizhi1, meizhi2) ->
+                        meizhi1.publishedAt.compareTo(meizhi2.publishedAt))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meizhis -> getView().updateMeizhi(meizhis));
+
+    }
+
     private synchronized void requestMeizhi(int number, final int page, final int loadType) {
 
-        GLog.d(TAG,"requestMeizhi, number=" + number + ",page=" + page + ",loadType=" + loadType);
+        GLog.d(TAG, "requestMeizhi, number=" + number + ",page=" + page + ",loadType=" + loadType);
 
-        Subscription subscription = ApiManager.getInstance().getGankApi()
+        ApiManager manager = (ApiManager) SuperManager.getAppManager(SuperManager.API_MANAGER);
+        Subscription subscription = manager.getGankApi()
                 .getMeizhi(number, page)
+                .map(meizhiData -> {
+                    if (meizhiData.isError) {
+                        Observable.error(new Exception("requestMeizhi error."));
+                    } else {
+                        return meizhiData.results;
+                    }
+                    return meizhiData.results;
+                })
+                .flatMap(Observable::from)
+                .toSortedList((meizhi1, meizhi2) ->
+                        meizhi1.publishedAt.compareTo(meizhi2.publishedAt))
+                .doOnNext(this::saveMeizhiToDatabase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MeizhiData>() {
+                .subscribe(new Observer<List<Meizhi>>() {
                     @Override
                     public void onCompleted() {
                         GLog.d(TAG, "requestMeizhi : onComplete.");
@@ -77,24 +119,29 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView>{
                         IMeizhiView view = getView();
                         view.setRefreshing(false);
                         view.showSnack(R.string.network_error, Snackbar.LENGTH_SHORT);
-
                     }
 
                     @Override
-                    public void onNext(MeizhiData meizhiData) {
-                        GLog.d(TAG, "requestMeizhi : " + meizhiData.results.toString());
+                    public void onNext(List<Meizhi> meizhis) {
+                        GLog.d(TAG, "requestMeizhi : " + meizhis.toString());
                         IMeizhiView view = getView();
-                        if(loadType == TYPE_REFRESH) {
+                        if (loadType == TYPE_REFRESH) {
                             mMeizhis.clear();
-                            mMeizhis.addAll(meizhiData.results);
-                        }else if(loadType == TYPE_LOAD_MORE) {
-                            mMeizhis.addAll(meizhiData.results);
-                        }else {
+                            mMeizhis.addAll(meizhis);
+                        } else if (loadType == TYPE_LOAD_MORE) {
+                            mMeizhis.addAll(meizhis);
+                        } else {
 
                         }
                         view.updateMeizhi(mMeizhis);
                     }
                 });
         addSubscription(subscription);
+    }
+
+    private void saveMeizhiToDatabase(List<Meizhi> meizhis) {
+        DatabaseManager manager = (DatabaseManager) SuperManager.getAppManager(SuperManager.DATABASE_MANAGER);
+        MeizhiDao dao = manager.getMeizhiDao();
+        dao.insertOrReplaceInTx(meizhis);
     }
 }

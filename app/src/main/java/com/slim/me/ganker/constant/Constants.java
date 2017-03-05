@@ -14,6 +14,8 @@ public class Constants {
 
     public static final String PHOTO_SAVE_PATH = APP_SDCARD_PATH + "/photo";
 
+    public static final String DATABASE_NAME = "ganker_db";
+
     public static class GankType {
         public static final String MEI_ZHI = "福利";
         public static final String ANDROID = "Android";

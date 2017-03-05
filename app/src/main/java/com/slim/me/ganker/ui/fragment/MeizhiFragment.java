@@ -51,7 +51,6 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new MeizhiPresenter(this);
-        mPresenter.loadMore();
     }
 
     @Override
@@ -69,11 +68,16 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mContentView = inflater.inflate(R.layout.fragment_meizhi, null);
-        ButterKnife.bind(this, mContentView);
+        if(mContentView == null) {
+            mContentView = inflater.inflate(R.layout.fragment_meizhi, null);
+            ButterKnife.bind(this, mContentView);
 
-        setupRefreshLayout();
-        setupRecyclerView();
+            setupRefreshLayout();
+            setupRecyclerView();
+
+            mPresenter.queryMeizhiFromDatabase();
+            mPresenter.loadMore();
+        }
         return mContentView;
     }
 
