@@ -4,13 +4,17 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.slim.me.ganker.R;
+import com.slim.me.ganker.data.entity.GankDao;
 import com.slim.me.ganker.manager.ApiManager;
 import com.slim.me.ganker.data.AllData;
+import com.slim.me.ganker.manager.DatabaseManager;
 import com.slim.me.ganker.manager.SuperManager;
 import com.slim.me.ganker.ui.view.IDailyView;
 import com.slim.me.ganker.util.GLog;
 
+import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

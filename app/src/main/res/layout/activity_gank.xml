@@ -38,27 +38,21 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/gank_list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    <LinearLayout
-        android:id="@+id/progress_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/daily_tab"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
 
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/daily_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

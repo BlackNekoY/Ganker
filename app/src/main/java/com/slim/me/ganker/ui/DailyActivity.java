@@ -7,30 +7,25 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.slim.me.ganker.R;
-import com.slim.me.ganker.data.AllData;
-import com.slim.me.ganker.data.entity.Gank;
+import com.slim.me.ganker.ui.adapter.DailyPagerAdapter;
 import com.slim.me.ganker.ui.event.JumpToWebEvent;
-import com.slim.me.ganker.ui.presenter.DailyPresenter;
-import com.slim.me.ganker.ui.provider.CategoryViewProvider;
-import com.slim.me.ganker.ui.provider.GanhuoViewProvider;
-import com.slim.me.ganker.ui.view.IDailyView;
+import com.slim.me.ganker.ui.fragment.BaseFragment;
+import com.slim.me.ganker.ui.fragment.DailyFragment;
+import com.slim.me.ganker.util.DateUtil;
 import com.slim.me.ganker.util.GLog;
 import com.slim.me.ganker.util.UiUtil;
 
@@ -38,79 +33,108 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.drakeet.multitype.Items;
-import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * Created by Slim on 2017/2/22.
  */
-public class DailyActivity extends ToolbarActivity implements IDailyView {
+public class DailyActivity extends ToolbarActivity {
 
     public static final String TAG = "DailyActivity";
     private static final String EXTRA_DATE = "EXTRA_PARAMS";
-    private static final String EXTRA_MEIZHI_URL = "EXTRA_URL";
+    private static final String EXTRA_MEIZHI_URL = "EXTRA_MEIZHI_URL";
 
-    private String mMeizhiUrl;
     private boolean mImageLoadSuccess;
-    private Date mDate;
-    private int mYear;
-    private int mMonth;
-    private int mDay;
+    private Date[] mDateArray;
+    private String[] mUrlArray;
 
-    private MultiTypeAdapter mAdapter;
+    private ArrayList<BaseFragment> mFragments = new ArrayList<>();
 
-    @BindView(R.id.meizhi_image) ImageView mMeizhiImage;
+    @BindView(R.id.meizhi_image)
+    ImageView mMeizhiImage;
 
-    @BindView(R.id.gank_list) RecyclerView mGankListView;
+    @BindView(R.id.collapsing_layout)
+    CollapsingToolbarLayout mCollapsingLayout;
 
-    @BindView(R.id.progress_layout) LinearLayout mProgressLayout;
+    @BindView(R.id.daily_pager)
+    ViewPager dailyPager;
 
-    @BindView(R.id.progress) ContentLoadingProgressBar mProgressBar;
+    @BindView(R.id.daily_tab)
+    TabLayout dailyTab;
 
-    @BindView(R.id.collapsing_layout) CollapsingToolbarLayout mCollapsingLayout;
-
-    private DailyPresenter mDailyPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        parseLaunchParams();
-        if (!checkLaunchParams()) {
+        if(!parseLaunchParams()) {
             finish();
             return;
         }
 
-        initToolbar();
-        initRecyclerView();
-
-        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.material_purple_500), android.graphics.PorterDuff.Mode.MULTIPLY);
+        setToolbarTitle(mDateArray[0]);
+        initDailyPager();
+        initDailyTab();
         setupMeizhiImage();
-
-        mDailyPresenter = new DailyPresenter(this);
-        mDailyPresenter.requestGankDaily(String.valueOf(mYear), String.valueOf(mMonth), String.valueOf(mDay));
-
     }
 
-    private void parseLaunchParams() {
+    private void initDailyPager() {
+        for(Date date : mDateArray) {
+            mFragments.add(DailyFragment.newInstance(date));
+        }
+
+        dailyPager.setAdapter(new DailyPagerAdapter(getSupportFragmentManager(), mFragments));
+        dailyPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setToolbarTitle(mDateArray[position]);
+                loadMeizhiImage(mUrlArray[position]);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void initDailyTab() {
+        if(mDateArray.length == 1) {
+            dailyTab.setVisibility(View.GONE);
+            return;
+        }
+        for(int i = 0; i < mDateArray.length; i++)  {
+            dailyTab.addTab(dailyTab.newTab());
+        }
+        dailyTab.setupWithViewPager(dailyPager);
+    }
+
+    private boolean parseLaunchParams() {
         Intent intent = getIntent();
         if(intent != null) {
-            mDate = (Date) intent.getSerializableExtra(EXTRA_DATE);
-            mMeizhiUrl = intent.getStringExtra(EXTRA_MEIZHI_URL);
-            GLog.d(TAG, "parseLaunchParams:[Date=" + mDate + ",url=" + mMeizhiUrl + ",name:" + "]");
+            mDateArray = (Date[]) intent.getSerializableExtra(EXTRA_DATE);
+            mUrlArray = intent.getStringArrayExtra(EXTRA_MEIZHI_URL);
+
+            if(mDateArray == null || mDateArray.length <= 0
+                    || mUrlArray == null || mUrlArray.length <= 0) {
+                return false;
+            }
+
+            return true;
         }else {
             GLog.e(TAG, "getIntent() return null.");
+            return false;
         }
     }
 
@@ -118,8 +142,13 @@ public class DailyActivity extends ToolbarActivity implements IDailyView {
         ViewGroup.LayoutParams params = mMeizhiImage.getLayoutParams();
         params.height = UiUtil.getScreenHeight(this) * 2 / 3;
         mMeizhiImage.setLayoutParams(params);
+        loadMeizhiImage(mUrlArray[0]);
+    }
+
+    private void loadMeizhiImage(String url) {
+        mImageLoadSuccess = false;
         Glide.with(this)
-                .load(mMeizhiUrl)
+                .load(url)
                 .centerCrop()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
@@ -142,50 +171,11 @@ public class DailyActivity extends ToolbarActivity implements IDailyView {
     }
 
 
-    private void initToolbar() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-        setToolbarTitle(format.format(mDate));
-        mCollapsingLayout.setTitle(format.format(mDate));
+    private void setToolbarTitle(Date date) {
+        String title = DateUtil.formatDate(date);
+        setToolbarTitle(title);
+        mCollapsingLayout.setTitle(title);
         mCollapsingLayout.setExpandedTitleColor(Color.parseColor("#00ffffff"));
-
-        calendar.setTime(mDate);
-        mYear = calendar.get(Calendar.YEAR);
-        mMonth = calendar.get(Calendar.MONTH) + 1; // January month 0 in Calendar
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-        GLog.d(TAG, "initToolbar, year=" + mYear + ",month=" + mMonth + ",day=" + mDay);
-
-        getAppBar().addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                int range = appBarLayout.getTotalScrollRange();
-                if(verticalOffset > -range / 2) {
-                    //展开超一半
-                }else {
-                    //展开还没有一半
-                }
-            }
-        });
-    }
-
-    private void initRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mGankListView.setLayoutManager(layoutManager);
-
-        mAdapter = new MultiTypeAdapter();
-        mAdapter.register(CategoryViewProvider.Category.class, new CategoryViewProvider());
-        mAdapter.register(Gank.class, new GanhuoViewProvider());
-        mGankListView.setAdapter(mAdapter);
-
-    }
-
-    private boolean checkLaunchParams() {
-        if(mDate == null || TextUtils.isEmpty(mMeizhiUrl)) {
-            GLog.e(TAG, "LaunchParams is illegal, finish DailyActivity. Date:" + mDate + ",meizhiUrl:" + mMeizhiUrl);
-            return false;
-        }
-        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -200,47 +190,12 @@ public class DailyActivity extends ToolbarActivity implements IDailyView {
     public void jumpToPhotoActivity() {
         if(mImageLoadSuccess) {
             // 直接传Bitmap会失败，太大了
-            Intent intent = PhotoActivity.launchPhotoActivity(mMeizhiUrl, this);
+            int position = dailyPager.getCurrentItem();
+            Intent intent = PhotoActivity.launchPhotoActivity(mUrlArray[position], this);
             startActivity(intent);
         }else {
             GLog.d(TAG, "load image failed, can't not jump to PhotoActivity");
         }
-    }
-
-    @Override
-    public void updateDaily(AllData data) {
-        if(data == null) {
-            GLog.e(TAG, "updateDaily: data is null.");
-            return;
-        }
-        Items items = new Items();
-        final LinkedHashMap<String, ArrayList<Gank>> map = data.results;
-        for (Map.Entry<String, ArrayList<Gank>> entry : map.entrySet()) {
-            String category = entry.getKey();
-            ArrayList<Gank> ganks = entry.getValue();
-            if(ganks != null && !ganks.isEmpty() && !"福利".equals(category)) {
-                items.add(new CategoryViewProvider.Category(category));
-                items.addAll(ganks);
-            }
-        }
-        mAdapter.setItems(items);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void setLoadingState(boolean isLoading) {
-        if(isLoading) {
-            mProgressLayout.setVisibility(View.VISIBLE);
-            mProgressBar.show();
-        }else {
-            mProgressLayout.setVisibility(View.GONE);
-            mProgressBar.hide();
-        }
-    }
-
-    @Override
-    protected void unsubscribePresenterSubscription() {
-        mDailyPresenter.unSubscribeAllSubscription();
     }
 
     @Override
@@ -274,10 +229,10 @@ public class DailyActivity extends ToolbarActivity implements IDailyView {
         EventBus.getDefault().unregister(this);
     }
 
-    public static Intent getLaunchIntent(@NonNull Date date, String meizhiUrl, Activity launchActivity) {
+    public static Intent getLaunchIntent(@NonNull Date[] dateArray, @NonNull String[] urlArray, Activity launchActivity) {
         Intent intent = new Intent(launchActivity, DailyActivity.class);
-        intent.putExtra(EXTRA_DATE, date);
-        intent.putExtra(EXTRA_MEIZHI_URL, meizhiUrl);
+        intent.putExtra(EXTRA_DATE, dateArray);
+        intent.putExtra(EXTRA_MEIZHI_URL, urlArray);
         return intent;
     }
 }

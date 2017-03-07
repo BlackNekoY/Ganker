@@ -14,6 +14,7 @@ import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.entity.Meizhi;
 import com.slim.me.ganker.ui.DailyActivity;
 import com.slim.me.ganker.ui.adapter.MeizhiListAdapter;
+import com.slim.me.ganker.ui.event.MeizhiClickEvent;
 import com.slim.me.ganker.ui.presenter.MeizhiPresenter;
 import com.slim.me.ganker.ui.view.IMeizhiView;
 import com.slim.me.ganker.util.GLog;
@@ -22,6 +23,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -159,9 +163,23 @@ public class MeizhiFragment extends BaseFragment implements IMeizhiView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MeizhiListAdapter.MeizhiClickEvent event) {
-        Meizhi meizhi = event.meizhi;
-        Intent intent = DailyActivity.getLaunchIntent(meizhi.publishedAt, meizhi.url, getActivity());
-        getActivity().startActivity(intent);
+    public void onMessageEvent(MeizhiClickEvent event) {
+
+        List<Meizhi> presenterList = mPresenter.getMeizhis();
+        int index = presenterList.indexOf(event.meizhi);
+        int length = Math.min(presenterList.size() - index, 5);
+
+        Date[] dates = new Date[length];
+        String[] urls = new String[length];
+
+
+        for(int i = index; i < index + length; i++) {
+            Meizhi meizhi = presenterList.get(i);
+            dates[i-index] = meizhi.publishedAt;
+            urls[i-index] = meizhi.url;
+        }
+
+        Intent intent = DailyActivity.getLaunchIntent(dates, urls, getActivity());
+        startActivity(intent);
     }
 }

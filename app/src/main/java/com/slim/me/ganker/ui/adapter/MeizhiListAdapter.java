@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.slim.me.ganker.R;
 import com.slim.me.ganker.data.entity.Meizhi;
+import com.slim.me.ganker.ui.event.MeizhiClickEvent;
 import com.slim.me.ganker.ui.widget.RatioImageView;
 import com.slim.me.ganker.util.GLog;
 
@@ -21,7 +22,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -122,12 +122,5 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Me
         }
     }
 
-    public static class MeizhiClickEvent {
-        public final Meizhi meizhi;
-
-        MeizhiClickEvent(Meizhi meizhi) {
-            this.meizhi = meizhi;
-        }
-    }
 
 }

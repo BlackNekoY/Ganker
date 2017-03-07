@@ -28,10 +28,6 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
- * TODO Presenter可以将不同业务抽成不同的Manager，比如
- * Meizhi下载：MeizhiDownloadManager
- * Meizhi写数据库:MeizhiDatabaseManager等，Presenter不操作具体逻辑，分发给具体的model
- * <p>
  * Created by Slim on 2017/2/16.
  */
 public class MeizhiPresenter extends BasePresenter<IMeizhiView> {
@@ -70,14 +66,9 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView> {
                 subscriber.onCompleted();
             }
         })
-                .flatMap(new Func1<List<Meizhi>, Observable<Meizhi>>() {
-                    @Override
-                    public Observable<Meizhi> call(List<Meizhi> meizhis) {
-                        return Observable.from(meizhis);
-                    }
-                })
+                .flatMap(Observable::from)
                 .toSortedList((meizhi1, meizhi2) ->
-                        meizhi1.publishedAt.compareTo(meizhi2.publishedAt))
+                        meizhi2.publishedAt.compareTo(meizhi1.publishedAt))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(meizhis -> getView().updateMeizhi(meizhis));
 
@@ -100,7 +91,7 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView> {
                 })
                 .flatMap(Observable::from)
                 .toSortedList((meizhi1, meizhi2) ->
-                        meizhi1.publishedAt.compareTo(meizhi2.publishedAt))
+                        meizhi2.publishedAt.compareTo(meizhi1.publishedAt))
                 .doOnNext(this::saveMeizhiToDatabase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -143,5 +134,9 @@ public class MeizhiPresenter extends BasePresenter<IMeizhiView> {
         DatabaseManager manager = (DatabaseManager) SuperManager.getAppManager(SuperManager.DATABASE_MANAGER);
         MeizhiDao dao = manager.getMeizhiDao();
         dao.insertOrReplaceInTx(meizhis);
+    }
+
+    public List<Meizhi> getMeizhis() {
+        return new ArrayList<>(mMeizhis);
     }
 }
